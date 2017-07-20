@@ -5,14 +5,8 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.prepend(renderer.domElement);
 
-const color = Number('0x' + tinycolor("hsl(0, 100%, 50%)").toHex8String().substring(1, 7));
-console.log('color', color);
-
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-var material = new THREE.MeshBasicMaterial({
-    color: color,
-    wireframe: true,
-});
+var material = new THREE.MeshNormalMaterial();
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
