@@ -7,6 +7,8 @@
     "three": "^0.86.0"
   },
   "devDependencies": {
+    "eslint": "^4.2.0",
+    "eslint-config-google": "^0.9.1",
     "express": "^4.15.3",
     "serve-index": "^1.9.0"
   },
