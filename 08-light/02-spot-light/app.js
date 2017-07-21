@@ -8,11 +8,8 @@
 	}
 
 	const renderer = new THREE.WebGLRenderer();
-	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.shadowMap.enabled = true;
-	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-	renderer.gammaInput = true;
+	// add this to have more light
 	renderer.gammaOutput = true;
 
 	document.body.prepend(renderer.domElement);
@@ -23,40 +20,34 @@
 	const origin = new THREE.Vector3(0, 0, 0);
 	camera.lookAt(origin);
 
-	scene.add(camera);
-
 	const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
 	scene.add(ambientLight);
 
-	var light = new THREE.PointLight(0xffffff, 1);
-	light.position.set(5, 5, 5);
-	scene.add(light);
+	var pointLight = new THREE.PointLight(0xffffff, 1);
+	pointLight.position.set(5, 5, 5);
+	scene.add(pointLight);
 
+	// valeur ajoutée
+	// ajout d'un spot de lumière
 	const spotLight = new THREE.SpotLight(0xffffff, 0.5);
 
+	spotLight.intensity = 10;
 	spotLight.position.set(5, 5, 5);
 	spotLight.angle = 0;
-	spotLight.penumbra = 0.05;
-	spotLight.decay = 2;
-	spotLight.distance = 200;
+	spotLight.penumbra = 0.05; // netteté des bords du cone
+	spotLight.decay = 2; // atténuation de la lumière par l'espace traversé
+	spotLight.distance = 10;
 
-	spotLight.castShadow = true;
-	spotLight.shadow.mapSize.width = 1024;
-	spotLight.shadow.mapSize.height = 1024;
-	spotLight.shadow.camera.near = 1;
-	spotLight.shadow.camera.far = 200;
 	scene.add(spotLight);
 
+	// materialiser le cone de lumière (debug)
 	const lightHelper = new THREE.SpotLightHelper(spotLight);
 	scene.add(lightHelper);
 
-	const shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-	// scene.add(shadowCameraHelper);
-
-	scene.add(new THREE.AxisHelper(1000));
-
 	const geometry = new THREE.BoxGeometry(3, 3, 0.2);
-	var material = new THREE.MeshPhongMaterial({ color: 0x808080, dithering: true });
+	// matière permettant de jouer sur les ombres sur les surfaces solides 
+	// (obligatoire quand on utilise les spots)
+	var material = new THREE.MeshPhongMaterial({ color: 0xffffff, dithering: true });
 	var plate = new THREE.Mesh(geometry, material);
 	scene.add(plate);
 
@@ -74,7 +65,6 @@
 		angle += inc;
 		spotLight.angle = angle;
 		lightHelper.update();
-		shadowCameraHelper.update();
 		renderer.render(scene, camera);
 		document.getElementById('info').innerText = 'angle = ' + angle.toFixed(2);
 
